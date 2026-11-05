@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="kk" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECO WATER LAB – Судың сапасын зерттеу платформасы</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        eco: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #0284c7 0%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .water-wave {
+            background: linear-gradient(180deg, rgba(14, 165, 233, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- NAVIGATION HEADER -->
+    <header class="sticky top-0 z-50 glass-card shadow-sm border-b border-slate-200/80 transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl gradient-bg flex items-center justify-center text-white text-2xl shadow-lg shadow-brand-500/30">
+                        <i class="fa-solid font-bold fa-droplet"></i>
+                    </div>
+                    <div>
+                        <span class="text-2xl font-black tracking-tight gradient-text">ECO WATER LAB</span>
+                        <span class="block text-xs font-semibold text-slate-400 tracking-wider uppercase">Су сапасының химиялық зертханасы</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center gap-1 font-medium text-slate-600">
+                    <a href="#hero" class="px-4 py-2 rounded-xl hover:text-brand-600 hover:bg-brand-50/80 transition">Басты бет</a>
+                    <a href="#indicators" class="px-4 py-2 rounded-xl hover:text-brand-600 hover:bg-brand-50/80 transition">Индикаторлар</a>
+                    <a href="#analysis" class="px-4 py-2 rounded-xl hover:text-brand-600 hover:bg-brand-50/80 transition">Талдау & Диаграмма</a>
+                    <a href="#ai-advisor" class="px-4 py-2 rounded-xl hover:text-brand-600 hover:bg-brand-50/80 transition">AI Кеңесші</a>
+                    <a href="#comparison" class="px-4 py-2 rounded-xl hover:text-brand-600 hover:bg-brand-50/80 transition">Салыстыру</a>
+                    <a href="#quiz" class="ml-2 px-5 py-2.5 rounded-xl gradient-bg text-white font-semibold shadow-md shadow-brand-500/20 hover:opacity-95 transition flex items-center gap-2">
+                        <i class="fa-solid fa-vial-circle-check"></i> Тест тапсыру
+                    </a>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button id="menu-btn" class="md:hidden p-2.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 focus:outline-none">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white px-4 pt-3 pb-6 space-y-2">
+            <a href="#hero" class="block px-4 py-2.5 rounded-lg font-medium text-slate-700 hover:bg-brand-50 hover:text-brand-600">Басты бет</a>
+            <a href="#indicators" class="block px-4 py-2.5 rounded-lg font-medium text-slate-700 hover:bg-brand-50 hover:text-brand-600">Индикаторлар</a>
+            <a href="#analysis" class="block px-4 py-2.5 rounded-lg font-medium text-slate-700 hover:bg-brand-50 hover:text-brand-600">Талдау & Диаграмма</a>
+            <a href="#ai-advisor" class="block px-4 py-2.5 rounded-lg font-medium text-slate-700 hover:bg-brand-50 hover:text-brand-600">AI Кеңесші</a>
+            <a href="#comparison" class="block px-4 py-2.5 rounded-lg font-medium text-slate-700 hover:bg-brand-50 hover:text-brand-600">Салыстыру</a>
+            <a href="#quiz" class="block text-center px-4 py-2.5 rounded-lg gradient-bg text-white font-semibold shadow-sm">Тест тапсыру</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO SECTION -->
+        <section id="hero" class="relative py-16 lg:py-24 overflow-hidden water-wave">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    <div class="lg:col-span-7 space-y-6">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-100/70 border border-brand-200 text-brand-700 text-xs sm:text-sm font-semibold">
+                            <i class="fa-solid fa-flask-vial"></i> Ғылыми-цифрлық зерттеу жобасы
+                        </div>
+                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                            Судың сапасын <span class="gradient-text">химиялық көрсеткіштер</span> арқылы талдау
+                        </h1>
+                        <p class="text-lg text-slate-600 leading-relaxed">
+                            «ECO WATER LAB» — заманауи цифрлық технологиялар мен химиялық экспресс-талдау арқылы судың экологиялық қауіпсіздігін бағалауға арналған интерактивті веб-платформа.
+                        </p>
+                        
+                        <!-- Research Question Box -->
+                        <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-xl shadow-slate-200/50 space-y-2">
+                            <div class="flex items-center gap-2 text-brand-600 font-bold text-sm tracking-wide uppercase">
+                                <i class="fa-solid fa-circle-question"></i> Зерттеу сұрағы:
+                            </div>
+                            <p class="text-base sm:text-lg font-medium text-slate-800 italic">
+                                «Цифрлық веб-қосымша арқылы судың химиялық көрсеткіштерін талдап, оның сапасын нақты және дәл бағалауға бола ма?»
+                            </p>
+                        </div>
+
+                        <div class="flex flex-wrap gap-4 pt-2">
+                            <a href="#analysis" class="px-7 py-4 rounded-xl gradient-bg text-white font-bold text-lg shadow-lg shadow-brand-500/30 hover:shadow-brand-500/50 hover:scale-[1.02] active:scale-[0.98] transition">
+                                <i class="fa-solid fa-microscope mr-2"></i> Суды талдауды бастау
+                            </a>
+                            <a href="#indicators" class="px-7 py-4 rounded-xl bg-white border border-slate-300 text-slate-700 font-bold text-lg hover:bg-slate-50 transition shadow-sm">
+                                Анықтамалықты қарау
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Visual Graphics -->
+                    <div class="lg:col-span-5">
+                        <div class="relative mx-auto max-w-md lg:max-w-none">
+                            <div class="absolute -top-6 -left-6 w-32 h-32 bg-brand-400/20 rounded-full blur-2xl"></div>
+                            <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-emerald-400/20 rounded-full blur-2xl"></div>
+                            <div class="relative glass-card p-8 rounded-3xl shadow-2xl border border-white/60 space-y-6">
+                                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                                    <span class="font-bold text-slate-700">Жедел экспресс бақылау</span>
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 flex items-center gap-1.5">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Белсенді
+                                    </span>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold">pH</div>
+                                            <div>
+                                                <div class="text-sm font-bold text-slate-800">Қышқылдық баланс</div>
+                                                <div class="text-xs text-slate-500">Норма: 6.5 - 8.5</div>
+                                            </div>
+                                        </div>
+                                        <span class="font-extrabold text-blue-600">7.2 pH</span>
+                                    </div>
+                                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold"><i class="fa-solid fa-gem"></i></div>
+                                            <div>
+                                                <div class="text-sm font-bold text-slate-800">Жалпы кермектік</div>
+                                                <div class="text-xs text-slate-500">Норма: &lt; 7.0 ммоль/л</div>
+                                            </div>
+                                        </div>
+                                        <span class="font-extrabold text-emerald-600">3.5 ммоль/л</span>
+                                    </div>
+                                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center font-bold">NO₃</div>
+                                            <div>
+                                                <div class="text-sm font-bold text-slate-800">Нитраттар деңгейі</div>
+                                                <div class="text-xs text-slate-500">ШШК: &lt; 45 мг/л</div>
+                                            </div>
+                                        </div>
+                                        <span class="font-extrabold text-amber-600">12 мг/л</span>
+                                    </div>
+                                </div>
+                                <div class="pt-2 text-center text-xs text-slate-400 font-medium">
+                                    <i class="fa-solid fa-shield-halved text-brand-500"></i> Санитарлық-эпидемиологиялық стандартқа сәйкес
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CHEMICAL INDICATORS SECTION -->
+        <section id="indicators" class="py-16 bg-white border-y border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-brand-600">Ғылыми анықтамалық</h2>
+                    <p class="text-3xl sm:text-4xl font-extrabold text-slate-900">Судың негізгі химиялық көрсеткіштері</p>
+                    <p class="text-slate-600">Адам ағзасы мен экожүйе үшін маңызды негізгі химиялық параметрлердің рөлі мен шекті нормалары.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- pH Card -->
+                    <div class="p-8 rounded-3xl bg-slate-50 border border-slate-200 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+                        <div class="space-y-4">
+                            <div class="w-14 h-14 rounded-2xl bg-blue-500 text-white flex items-center justify-center text-2xl font-bold shadow-lg shadow-blue-500/30 group-hover:scale-110 transition">
+                                pH
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-900">pH көрсеткіші (Қышқылдылық)</h3>
+                            <p class="text-slate-600 text-sm leading-relaxed">
+                                Судағы сутек иондарының белсенділігін анықтайды. Ауыз суының оңтайлы pH деңгейі <strong>6.5 – 8.5</strong> аралығында болуы тиіс.
+                            </p>
+                            <div class="p-4 rounded-xl bg-white border border-slate-200 space-y-2">
+                                <div class="text-xs font-bold text-slate-400 uppercase">Орта индикациясы:</div>
+                                <div class="text-xs font-medium space-y-1">
+                                    <div class="flex justify-between text-amber-600"><span>&lt; 6.5</span> <span>Қышқылды</span></div>
+                                    <div class="flex justify-between text-emerald-600 font-bold"><span>6.5 - 8.5</span> <span>Қалыпты (Бейтарап)</span></div>
+                                    <div class="flex justify-between text-purple-600"><span>&gt; 8.5</span> <span>Сілтілі</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hardness Card -->
+                    <div class="p-8 rounded-3xl bg-slate-50 border border-slate-200 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+                        <div class="space-y-4">
+                            <div class="w-14 h-14 rounded-2xl bg-emerald-500 text-white flex items-center justify-center text-2xl font-bold shadow-lg shadow-emerald-500/30 group-hover:scale-110 transition">
+                                <i class="fa-solid fa-cube"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-900">Судың Кермектігі (Ca²⁺, Mg²⁺)</h3>
+                            <p class="text-slate-600 text-sm leading-relaxed">
+                                Судағы Кальций мен Магний иондарының жиынтық мөлшері. Кермек су тұрмыстық техникада қақ тұрғызады және бүйректе тас жиналу қаупін арттырады.
+                            </p>
+                            <div class="p-4 rounded-xl bg-white border border-slate-200 space-y-2">
+                                <div class="text-xs font-bold text-slate-400 uppercase">Жіктелуі (ммоль/л):</div>
+                                <div class="text-xs font-medium space-y-1">
+                                    <div class="flex justify-between text-emerald-600"><span>0 - 3.0</span> <span>Жұмсақ су</span></div>
+                                    <div class="flex justify-between text-blue-600 font-bold"><span>3.0 - 7.0</span> <span>Орташа кермек</span></div>
+                                    <div class="flex justify-between text-rose-600"><span>&gt; 7.0</span> <span>Өте кермек (Қатты)</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nitrates Card -->
+                    <div class="p-8 rounded-3xl bg-slate-50 border border-slate-200 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group">
+                        <div class="space-y-4">
+                            <div class="w-14 h-14 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-2xl font-bold shadow-lg shadow-amber-500/30 group-hover:scale-110 transition">
+                                NO₃
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-900">Нитраттар мен Тұздар</h3>
+                            <p class="text-slate-600 text-sm leading-relaxed">
+                                Ауыл шаруашылығы тыңайтқыштарынан немесе ағын сулардан келетін азот қосылыстары. Рұқсат етілген шекті концентрациясы (ШШК/ПДК) — <strong>45 мг/л</strong>.
+                            </p>
+                            <div class="p-4 rounded-xl bg-white border border-slate-200 space-y-2">
+                                <div class="text-xs font-bold text-slate-400 uppercase">ШШК Нормативы (мг/л):</div>
+                                <div class="text-xs font-medium space-y-1">
+                                    <div class="flex justify-between text-emerald-600 font-bold"><span>0 - 45 мг/л</span> <span>Қауіпсіз деңгей</span></div>
+                                    <div class="flex justify-between text-rose-600"><span>&gt; 45 мг/л</span> <span>Улы! ШШК-дан асты</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INTERACTIVE ANALYSIS & CHART SECTION -->
+        <section id="analysis" class="py-16 bg-slate-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-12 space-y-3">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-brand-600">Практикалық Зертхана</h2>
+                    <p class="text-3xl sm:text-4xl font-extrabold text-slate-900">Судың сапасын онлайн талдау</p>
+                    <p class="text-slate-600">Төмендегі жылжытпаларды (slider) немесе енгізу өрістерін пайдаланып су үлгісінің көрсеткіштерін тексеріңіз.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <!-- Controls Form -->
+                    <div class="lg:col-span-5 bg-white p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
+                        <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-4">
+                            <i class="fa-solid fa-sliders text-brand-500"></i> Өлшем мәндерін енгізу
+                        </h3>
+
+                        <!-- pH Slider -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <label for="input-ph" class="font-bold text-slate-700">pH көрсеткіші:</label>
+                                <span id="ph-val-disp" class="font-extrabold text-brand-600">7.2 pH</span>
+                            </div>
+                            <input type="range" id="input-ph" min="0" max="14" step="0.1" value="7.2" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-500">
+                            <div class="flex justify-between text-xs text-slate-400">
+                                <span>0 (Қышқыл)</span>
+                                <span>7 (Бейтарап)</span>
+                                <span>14 (Сілті)</span>
+                            </div>
+                        </div>
+
+                        <!-- Hardness Slider -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <label for="input-hardness" class="font-bold text-slate-700">Кермектілік (ммоль/л):</label>
+                                <span id="hardness-val-disp" class="font-extrabold text-emerald-600">3.5 ммоль/л</span>
+                            </div>
+                            <input type="range" id="input-hardness" min="0" max="15" step="0.1" value="3.5" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                            <div class="flex justify-between text-xs text-slate-400">
+                                <span>0 (Жұмсақ)</span>
+                                <span>7 (Шекі норма)</span>
+                                <span>15 (Өте қатты)</span>
+                            </div>
+                        </div>
+
+                        <!-- Nitrates Input -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <label for="input-nitrates" class="font-bold text-slate-700">Нитраттар (мг/л):</label>
+                                <span id="nitrates-val-disp" class="font-extrabold text-amber-600">20 мг/л</span>
+                            </div>
+                            <input type="range" id="input-nitrates" min="0" max="100" step="1" value="20" class="w-full h-2.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-500">
+                            <div class="flex justify-between text-xs text-slate-400">
+                                <span>0 мг/л</span>
+                                <span>45 мг/л (ШШК)</span>
+                                <span>100 мг/л</span>
+                            </div>
+                        </div>
+
+                        <!-- Auto status report -->
+                        <div id="status-box" class="p-5 rounded-2xl bg-emerald-50 border border-emerald-200 transition-all">
+                            <div class="flex items-center gap-3">
+                                <i id="status-icon" class="fa-solid fa-circle-check text-2xl text-emerald-600"></i>
+                                <div>
+                                    <div id="status-title" class="font-bold text-emerald-900">Су сапасы: Нормаға сай</div>
+                                    <div id="status-desc" class="text-xs text-emerald-700 mt-0.5">Барлық көрсеткіштер рұқсат етілген санитарлық норма шегінде.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visualization Chart -->
+                    <div class="lg:col-span-7 bg-white p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                            <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-column text-brand-500"></i> Салыстырмалы График (Норма vs Нақты)
+                            </h3>
+                            <span class="text-xs text-slate-400 font-medium">Chart.js Интеракциясы</span>
+                        </div>
+                        <div class="relative w-full h-[320px]">
+                            <canvas id="waterChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI ENVIRONMENTAL ADVISOR SECTION -->
+        <section id="ai-advisor" class="py-16 bg-white border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto bg-gradient-to-br from-slate-900 to-slate-800 text-white p-8 sm:p-12 rounded-3xl shadow-2xl relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-brand-500/20 rounded-full blur-3xl"></div>
+                    
+                    <div class="relative z-10 space-y-8">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-2xl bg-brand-500/20 border border-brand-400/30 flex items-center justify-center text-brand-400 text-2xl">
+                                    <i class="fa-solid fa-robot"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-bold">AI Экологиялық Кеңесші</h3>
+                                    <p class="text-slate-400 text-xs">Автоматты сараптама және ұсыныс жүйесі</p>
+                                </div>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-brand-500/20 text-brand-300 text-xs font-semibold border border-brand-500/30">
+                                Real-time AI Analysis
+                            </span>
+                        </div>
+
+                        <!-- Dynamic AI Output -->
+                        <div class="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-4">
+                            <div class="flex items-center gap-2 text-brand-400 font-bold text-sm">
+                                <i class="fa-solid fa-lightbulb"></i> Енгізілген көрсеткіштер бойынша AI қорытындысы:
+                            </div>
+                            <ul id="ai-recommendations" class="space-y-3 text-sm text-slate-300">
+                                <!-- Dynamic items loaded via JS -->
+                            </ul>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                            <div class="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
+                                <div class="text-xs text-slate-400 mb-1">Ұсынылатын сүзгі:</div>
+                                <div id="ai-filter-type" class="font-bold text-brand-300">Стандартты көмір сүзгісі</div>
+                            </div>
+                            <div class="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
+                                <div class="text-xs text-slate-400 mb-1">Өңдеу әдісі:</div>
+                                <div id="ai-treatment" class="font-bold text-emerald-300">Тікелей тұтынуға жарамды</div>
+                            </div>
+                            <div class="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
+                                <div class="text-xs text-slate-400 mb-1">Денсаулық қаупі:</div>
+                                <div id="ai-risk" class="font-bold text-emerald-400">Төмен (Тәуекелсіз)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECT COMPARISON SECTION (Chem Detective vs Eco Water Lab) -->
+        <section id="comparison" class="py-16 bg-slate-50 border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-12 space-y-3">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-brand-600">Ғылыми салыстыру</h2>
+                    <p class="text-3xl sm:text-4xl font-extrabold text-slate-900">Екі жобаның ерекшелігі</p>
+                    <p class="text-slate-600">Жобамыздың басқа химиялық цифрлық құралдардан негізгі айырмашылықтары.</p>
+                </div>
+
+                <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-900 text-white">
+                                    <th class="p-5 font-bold text-sm">Көрсеткіш</th>
+                                    <th class="p-5 font-bold text-sm bg-slate-800">CHEM DETECTIVE</th>
+                                    <th class="p-5 font-bold text-sm bg-brand-700 text-white">ECO WATER LAB (Біздің жоба)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-sm">
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-5 font-bold text-slate-800">Негізгі бағыты</td>
+                                    <td class="p-5 text-slate-600">Жалпы химиялық заттар мен реакциялар</td>
+                                    <td class="p-5 font-semibold text-brand-700 bg-brand-50/40">Су химиясы және экологиялық бақылау</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-5 font-bold text-slate-800">Зерттеу түрі</td>
+                                    <td class="p-5 text-slate-600">Теориялық жіктеу, талдау</td>
+                                    <td class="p-5 font-semibold text-brand-700 bg-brand-50/40">Тәжірибелік есептеу, сапалық мониторинг</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-5 font-bold text-slate-800">Веб-қосымша рөлі</td>
+                                    <td class="p-5 text-slate-600">Химиялық анықтамалық және анықтама базасы</td>
+                                    <td class="p-5 font-semibold text-brand-700 bg-brand-50/40">Су сапасын талдау және визуалды бағалау</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-5 font-bold text-slate-800">AI қызметі</td>
+                                    <td class="p-5 text-slate-600">Химиялық ассистент (формулалар)</td>
+                                    <td class="p-5 font-semibold text-brand-700 bg-brand-50/40">Экологиялық кеңесші (тазарту ұсыныстары)</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50">
+                                    <td class="p-5 font-bold text-slate-800">Практикалық жұмыс</td>
+                                    <td class="p-5 text-slate-600">Реакцияларды модельдеу</td>
+                                    <td class="p-5 font-semibold text-brand-700 bg-brand-50/40">Су үлгілерінің көрсеткіштерін зерттеу</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KNOWLEDGE QUIZ SECTION -->
+        <section id="quiz" class="py-16 bg-white border-t border-slate-200">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center space-y-3 mb-12">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-brand-600">Интерактивті тест</h2>
+                    <p class="text-3xl sm:text-4xl font-extrabold text-slate-900">Су химиясы бойынша білімді тексеру</p>
+                    <p class="text-slate-600">Өз біліміңізді 5 сұрақтан тұратын тест арқылы тексеріп көрсеңіз болады.</p>
+                </div>
+
+                <div class="bg-slate-50 p-8 sm:p-10 rounded-3xl border border-slate-200 shadow-xl space-y-8">
+                    <form id="quiz-form" class="space-y-8">
+                        <!-- Q1 -->
+                        <div class="space-y-3">
+                            <label class="block font-bold text-slate-800 text-lg">1. Ауыз суы үшін қалыпты pH деңгейі қандай аралықта болуы керек?</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <label class="p-4 rounded-xl bg-white border border-slate-200 flex items-center gap-3 cursor-pointer hover:border-brand-500 transition">
+                                    <input type="radio" name="q1" value="a" class="accent-brand-500"> <span>3.0 – 5.0 pH</span>
+                                </label>
+                                <label class="p-4 rounded-xl bg-white border border-slate-200 flex items-center gap-3 cursor-pointer hover:border-brand-500 transition">
+                                    <input type="radio" name="q1" value="b" class="accent-brand-500"> <span>6.5 – 8.5 pH</span>
+                                </label>
+                                <label class="p-4 rounded-xl bg-white border border-slate-200 flex items-center gap-3 cursor-pointer hover:border-brand-500 transition">
+                                    <input type="radio" name="q1" value="c" class="accent-brand-500"> <span>9.0 – 12.0 pH</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Q2 -->
+                        <div class="space-y-3">
+                            <label class="block font-bold text-slate-800 text-lg">2. Судың кермектілігі қай иондардың мөлшеріне байланысты?</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <label class="p-4 rounded-xl bg-white border border-slate-200 flex items-center gap-3 cursor-pointer hover:border-brand-500 transition">
+                                    <input type="radio" name="q2" value="a" class="accent-brand-500"> <span>Na⁺ және K⁺</span>
+                                </label>
+                                <label class="p-4 rounded-xl bg-white border border-slate-200 flex items-center gap-3 cursor-pointer hover:border-brand-500 transition">
+                                    <input type="radio" name="q2" value="b" class="accent-brand-500"> <span>Ca²⁺ және Mg²⁺</span>
+                                </label>
+                                <label class="p-4 rounded-xl bg-white border border-slate-200 flex items-center gap-3 cursor-pointer hover:border-brand-500 transition">
+                                    <input type="radio" name="q2" value="c" class="accent-brand-500"> <span>Fe³⁺ және Cu²⁺</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Q3 -->
+                        <div class="space-y-3">
+                            <label class="block font-bold text-slate-800 text-lg">3. Судағы нитраттардың (NO₃) рұқсат етілген шекті концентрациясы (ШШК) қанша?</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <label class="p-4 rounded-xl bg-white border border-slate-200 flex items-center gap-3 cursor-pointer hover:border-brand-500 transition">
+                                    <input type="radio" name="q3" value="a" class="accent-brand-500"> <span>45 мг/л</span>
+                                </label>
+                                <label class="p-4 rounded-xl bg-white border border-slate-200 flex items-center gap-3 cursor-pointer hover:border-brand-500 transition">
+                                    <input type="radio" name="q3" value="b" class="accent-brand-500"> <span>100 мг/л</span>
+                                </label>
+                                <label class="p-4 rounded-xl bg-white border border-slate-200 flex items-center gap-3 cursor-pointer hover:border-brand-500 transition">
+                                    <input type="radio" name="q3" value="c" class="accent-brand-500"> <span>10 мг/л</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Q4 -->
+                        <div class="space-y-3">
+                            <label class="block font-bold text-slate-800 text-lg">4. Өте кермек (қатты) судың тұрмыстағы басты зияны қандай?</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <label class="p-4 rounded-xl bg-white border border-slate-200 flex items-center gap-3 cursor-pointer hover:border-brand-500 transition">
+                                    <input type="radio" name="q4" value="a" class="accent-brand-500"> <span>Түсінің өзгеруі</span>
+                                </label>
+                                <label class="p-4 rounded-xl bg-white border border-slate-200 flex items-center gap-3 cursor-pointer hover:border-brand-500 transition">
+                                    <input type="radio" name="q4" value="b" class="accent-brand-500"> <span>Тұрмыстық техникада қақ тұруы</span>
+                                </label>
+                                <label class="p-4 rounded-xl bg-white border border-slate-200 flex items-center gap-3 cursor-pointer hover:border-brand-500 transition">
+                                    <input type="radio" name="q4" value="c" class="accent-brand-500"> <span>Иісінің жағымсыз болуы</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Q5 -->
+                        <div class="space-y-3">
+                            <label class="block font-bold text-slate-800 text-lg">5. Тұздар мен зиянды иондардан суды тазартудың ең тиімді заманауи әдісі:</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <label class="p-4 rounded-xl bg-white border border-slate-200 flex items-center gap-3 cursor-pointer hover:border-brand-500 transition">
+                                    <input type="radio" name="q5" value="a" class="accent-brand-500"> <span>Тұндыру</span>
+                                </label>
+                                <label class="p-4 rounded-xl bg-white border border-slate-200 flex items-center gap-3 cursor-pointer hover:border-brand-500 transition">
+                                    <input type="radio" name="q5" value="b" class="accent-brand-500"> <span>Кері осмос (Reverse Osmosis)</span>
+                                </label>
+                                <label class="p-4 rounded-xl bg-white border border-slate-200 flex items-center gap-3 cursor-pointer hover:border-brand-500 transition">
+                                    <input type="radio" name="q5" value="c" class="accent-brand-500"> <span>Хлорлау</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="checkQuiz()" class="w-full py-4 rounded-xl gradient-bg text-white font-bold text-lg shadow-lg hover:opacity-95 transition">
+                            Нәтижені тексеру
+                        </button>
+                    </form>
+
+                    <!-- Quiz Result Box -->
+                    <div id="quiz-result" class="hidden p-6 rounded-2xl bg-white border border-slate-200 text-center space-y-3">
+                        <div id="quiz-score" class="text-3xl font-extrabold text-brand-600"></div>
+                        <p id="quiz-feedback" class="text-slate-600 text-sm"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-white py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 border-b border-slate-800 pb-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center text-white font-bold">
+                        <i class="fa-solid fa-droplet"></i>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight">ECO WATER LAB</span>
+                </div>
+                <div class="text-sm text-slate-400">
+                    © 2026 ECO WATER LAB – Судың сапасын зерттейтін ғылыми-цифрлық жоба.
+                </div>
+            </div>
+            <div class="pt-8 text-center text-xs text-slate-500">
+                Экология, Химия және IT пәндерінің тоғысында әзірленген интерактивті EdTech платформасы.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Mobile Navigation Toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // DOM Inputs
+        const inputPh = document.getElementById('input-ph');
+        const inputHardness = document.getElementById('input-hardness');
+        const inputNitrates = document.getElementById('input-nitrates');
+
+        const phDisp = document.getElementById('ph-val-disp');
+        const hardnessDisp = document.getElementById('hardness-val-disp');
+        const nitratesDisp = document.getElementById('nitrates-val-disp');
+
+        const statusBox = document.getElementById('status-box');
+        const statusIcon = document.getElementById('status-icon');
+        const statusTitle = document.getElementById('status-title');
+        const statusDesc = document.getElementById('status-desc');
+
+        const aiRecs = document.getElementById('ai-recommendations');
+        const aiFilter = document.getElementById('ai-filter-type');
+        const aiTreatment = document.getElementById('ai-treatment');
+        const aiRisk = document.getElementById('ai-risk');
+
+        // Initialize Chart.js
+        const ctx = document.getElementById('waterChart').getContext('2d');
+        let waterChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['pH көрсеткіші', 'Кермектілік (ммоль/л)', 'Нитраттар (мг/л)'],
+                datasets: [
+                    {
+                        label: 'Енгізілген көрсеткіш',
+                        data: [7.2, 3.5, 20],
+                        backgroundColor: ['rgba(14, 165, 233, 0.8)', 'rgba(34, 197, 94, 0.8)', 'rgba(245, 158, 11, 0.8)'],
+                        borderRadius: 12,
+                    },
+                    {
+                        label: 'Шеккі Норма (Макс)',
+                        data: [8.5, 7.0, 45],
+                        backgroundColor: 'rgba(203, 213, 225, 0.5)',
+                        borderRadius: 12,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Update Dashboard Logic
+        function updateDashboard() {
+            const ph = parseFloat(inputPh.value);
+            const hardness = parseFloat(inputHardness.value);
+            const nitrates = parseFloat(inputNitrates.value);
+
+            // Display text update
+            phDisp.innerText = `${ph} pH`;
+            hardnessDisp.innerText = `${hardness} ммоль/л`;
+            nitratesDisp.innerText = `${nitrates} мг/л`;
+
+            // Chart update
+            waterChart.data.datasets[0].data = [ph, hardness, nitrates];
+            waterChart.update();
+
+            // Status Check logic
+            let issues = [];
+            if (ph < 6.5) issues.push("Қышқылдылық өте жоғары (pH төмен)");
+            if (ph > 8.5) issues.push("Сілтілілік жоғары (pH жоғары)");
+            if (hardness > 7.0) issues.push("Кермектік шекті нормадан жоғары");
+            if (nitrates > 45) issues.push("Нитраттар ШШК-дан асып кетті!");
+
+            if (issues.length === 0) {
+                statusBox.className = "p-5 rounded-2xl bg-emerald-50 border border-emerald-200 transition-all";
+                statusIcon.className = "fa-solid fa-circle-check text-2xl text-emerald-600";
+                statusTitle.innerText = "Су сапасы: Нормаға сай (Қауіпсіз)";
+                statusTitle.className = "font-bold text-emerald-900";
+                statusDesc.innerText = "Барлық химиялық көрсеткіштер рұқсат етілген санитарлық нормада.";
+            } else {
+                statusBox.className = "p-5 rounded-2xl bg-rose-50 border border-rose-200 transition-all";
+                statusIcon.className = "fa-solid fa-triangle-exclamation text-2xl text-rose-600";
+                statusTitle.innerText = `Назар аударыңыз! (${issues.length} ауытқу бар)`;
+                statusTitle.className = "font-bold text-rose-900";
+                statusDesc.innerText = issues.join("; ");
+            }
+
+            // AI Recommendations Engine Simulation
+            let recsHtml = '';
+            if (issues.length === 0) {
+                recsHtml += '<li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Су тұтынуға толықтай қауіпсіз. Қосымша терең тазартуды талап етпейді.</li>';
+                recsHtml += '<li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Табиғи минералды балансы сақталған.</li>';
+                aiFilter.innerText = "Көмір сүзгісі (Профилактика)";
+                aiFilter.className = "font-bold text-emerald-300";
+                aiTreatment.innerText = "Тікелей тұтынуға болады";
+                aiTreatment.className = "font-bold text-emerald-300";
+                aiRisk.innerText = "Төмен (Қауіпсіз)";
+                aiRisk.className = "font-bold text-emerald-400";
+            } else {
+                if (ph < 6.5) recsHtml += '<li class="flex items-start gap-2"><i class="fa-solid fa-triangle-exclamation text-amber-400 mt-1"></i> Қышқылды су: Металл құбырларды коррозияға ұшыратады. Сілтілі минерализатор қолдану ұсынылады.</li>';
+                if (ph > 8.5) recsHtml += '<li class="flex items-start gap-2"><i class="fa-solid fa-triangle-exclamation text-amber-400 mt-1"></i> Сілтілі су: Теріні құрғатып, ас қорытуға әсер етуі мүмкін. Neutralizer сүзгісі қажет.</li>';
+                if (hardness > 7.0) recsHtml += '<li class="flex items-start gap-2"><i class="fa-solid fa-triangle-exclamation text-amber-400 mt-1"></i> Қатты су: Тұрмыстық техникада қақ тұрғызады. Ион алмастырғыш жұмсартқыш (Катионит) сүзгі орнатыңыз.</li>';
+                if (nitrates > 45) recsHtml += '<li class="flex items-start gap-2"><i class="fa-solid fa-circle-xmark text-rose-400 mt-1"></i> Улы Нитраттар асып кетті: Қайнату көмектеспейді! Тек <strong>Кері Осмос (Reverse Osmosis)</strong> мембранасы тазалай алады.</li>';
+
+                aiFilter.innerText = nitrates > 45 || hardness > 7 ? "Кері Осмос жүйесі" : "Ион алмастырғыш сүзгі";
+                aiFilter.className = "font-bold text-amber-300";
+                aiTreatment.innerText = "Терең тазарту қажет";
+                aiTreatment.className = "font-bold text-amber-300";
+                aiRisk.innerText = nitrates > 45 ? "Жоғары (Ішуге болмайды)" : "Орташа";
+                aiRisk.className = nitrates > 45 ? "font-bold text-rose-400" : "font-bold text-amber-400";
+            }
+            aiRecs.innerHTML = recsHtml;
+        }
+
+        inputPh.addEventListener('input', updateDashboard);
+        inputHardness.addEventListener('input', updateDashboard);
+        inputNitrates.addEventListener('input', updateDashboard);
+
+        // Initial trigger
+        updateDashboard();
+
+        // Quiz Verification Logic
+        function checkQuiz() {
+            const answers = { q1: 'b', q2: 'b', q3: 'a', q4: 'b', q5: 'b' };
+            let score = 0;
+            const form = document.getElementById('quiz-form');
+            const formData = new FormData(form);
+
+            for (let [q, ans] of Object.entries(answers)) {
+                if (formData.get(q) === ans) {
+                    score++;
+                }
+            }
+
+            const quizResult = document.getElementById('quiz-result');
+            const quizScore = document.getElementById('quiz-score');
+            const quizFeedback = document.getElementById('quiz-feedback');
+
+            quizResult.classList.remove('hidden');
+            quizScore.innerText = `Нәтижеңіз: ${score} / 5`;
+
+            if (score === 5) {
+                quizFeedback.innerText = "Керемет! Сіз су химиясы мен экологиясын өте жақсы меңгергенсіз!";
+            } else if (score >= 3) {
+                quizFeedback.innerText = "Жақсы нәтиже! Біліміңізді толықтыру үшін анықтамалықты қайта оқып шығыңыз.";
+            } else {
+                quizFeedback.innerText = "Төмен көрсеткіш. Материалдарды қайталап, қайта тапсыруға кеңес береміз.";
+            }
+        }
+    </script>
+</body>
+</html>
